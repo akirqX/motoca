@@ -6,18 +6,247 @@
   <title>Pagamento da Moto</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <style>
-    /* (Mantenha todos os estilos anteriores) */
+    :root {
+      --bg: #121212;
+      --bg-light: rgba(31, 31, 31, 0.85);
+      --text: #f0f0f0;
+      --primary: #4dabf7;
+      --success: #51cf66;
+      --danger: #ff6b6b;
+      --muted: #999;
+      --border: rgba(44, 44, 44, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      color: var(--text);
+      padding: 20px;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      object-fit: cover;
+      opacity: 0.9;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    h1 {
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 20px;
+      animation: fadeInDown 1s ease;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .container {
+      background: var(--bg-light);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      max-width: 1000px;
+      margin: 0 auto;
+      animation: fadeIn 1.2s ease-in-out;
+      backdrop-filter: blur(5px);
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 16px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.95rem;
+    }
+
+    th {
+      background: rgba(77, 171, 247, 0.7);
+      color: white;
+      font-weight: 600;
+      letter-spacing: 1px;
+      backdrop-filter: blur(5px);
+    }
+
+    tr:hover td {
+      background-color: rgba(255, 255, 255, 0.05);
+      transition: background 0.3s ease;
+    }
+
+    tr.pago td {
+      background-color: rgba(81, 207, 102, 0.1);
+      transition: background-color 0.3s;
+    }
+
+    tr.falta td {
+      background-color: rgba(255, 107, 107, 0.05);
+      transition: background-color 0.3s;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-pagar {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-pagar:hover {
+      background: #339af0;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(51, 154, 240, 0.3);
+    }
+
+    .btn-pago {
+      background: var(--muted);
+      color: #ccc;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .total-box {
+      margin-top: 30px;
+      background: rgba(28, 28, 28, 0.6);
+      padding: 20px;
+      border-radius: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      border-left: 4px solid var(--primary);
+      animation: fadeInUp 1s ease;
+      backdrop-filter: blur(5px);
+    }
+
+    .total-box p {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-group {
+      margin-top: 30px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 1.4s ease;
+    }
+
+    input[type='number'] {
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(42, 42, 42, 0.7);
+      border: 1px solid rgba(68, 68, 68, 0.5);
+      color: var(--text);
+      font-size: 1rem;
+      min-width: 150px;
+      backdrop-filter: blur(5px);
+      transition: all 0.3s;
+    }
+
+    input[type='number']:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.3);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
-  <!-- (Mantenha todo o HTML anterior) -->
+  <!-- Vídeo de fundo -->
+  <video autoplay muted loop class="video-background">
+    <source src="https://videos.pexels.com/video-files/5198907/5198907-uhd_2732_1440_25fps.mp4" type="video/mp4">
+    Seu navegador não suporta vídeos HTML5.
+  </video>
+  <div class="overlay"></div>
+  
+  <h1><i class="bi bi-speedometer2"></i> Pagamento da Moto</h1>
+  <div class="container">
+    <table id="tabelaParcelas">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Data</th>
+          <th>Valor</th>
+          <th>Status</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="total-box">
+      <p><i class="bi bi-cash-coin text-success"></i> Entrada: <strong>R$ 2.000,00</strong> (Junho)</p>
+      <p><i class="bi bi-wallet2"></i> Total Pago: <strong>R$ <span id="totalPago">0.00</span></strong></p>
+      <p><i class="bi bi-cash-stack"></i> Total Restante: <strong>R$ <span id="totalRestante">0.00</span></strong></p>
+      <p><i class="bi bi-calculator"></i> Total Geral: <strong>R$ 9.500,00</strong></p>
+    </div>
+
+    <div class="input-group">
+      <label for="adiantamento"><i class="bi bi-piggy-bank"></i> Adiantamento:</label>
+      <input type="number" id="adiantamento" step="0.01" placeholder="R$" />
+      <button class="btn-pagar" onclick="adicionarAdiantamento()"><i class="bi bi-plus-circle"></i> Adicionar</button>
+    </div>
+  </div>
 
   <script>
-    // Configuração do Gist
-    const GIST_ID = 'd3d01b828cbcb633ad1c1697678ba33d'; // Substitua pelo ID do seu Gist
-    const GIST_FILENAME = 'moto-payments.json';
-    const GITHUB_TOKEN = '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'; // Substitua por um token pessoal do GitHub
-
     const parcelasTotais = 15;
     const valorParcela = 500;
     const entrada = 2000;
@@ -26,63 +255,16 @@
     let totalRestante = parcelasTotais * valorParcela;
     let adiantamentoExtra = 0;
 
-    async function salvarDados() {
-      const data = {
-        parcelas,
-        adiantamentoExtra,
-        lastUpdated: new Date().toISOString()
-      };
-
-      try {
-        const response = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-          method: 'PATCH',
-          headers: {
-            'Authorization': `token ${GITHUB_TOKEN}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            files: {
-              [GIST_FILENAME]: {
-                content: JSON.stringify(data, null, 2)
-              }
-            }
-          })
-        });
-
-        if (!response.ok) {
-          console.error('Erro ao salvar no Gist:', await response.text());
-          // Fallback para localStorage
-          localStorage.setItem("parcelas", JSON.stringify(parcelas));
-          localStorage.setItem("adiantamentoExtra", adiantamentoExtra);
-        }
-      } catch (error) {
-        console.error('Erro ao salvar:', error);
-        // Fallback para localStorage
-        localStorage.setItem("parcelas", JSON.stringify(parcelas));
-        localStorage.setItem("adiantamentoExtra", adiantamentoExtra);
-      }
+    function salvarDados() {
+      localStorage.setItem("parcelas", JSON.stringify(parcelas));
+      localStorage.setItem("adiantamentoExtra", adiantamentoExtra);
     }
 
-    async function carregarDados() {
-      try {
-        const response = await fetch(`https://api.github.com/gists/${GIST_ID}`);
-        if (response.ok) {
-          const gist = await response.json();
-          const content = gist.files[GIST_FILENAME].content;
-          const data = JSON.parse(content);
-          
-          parcelas = data.parcelas || [];
-          adiantamentoExtra = data.adiantamentoExtra || 0;
-        } else {
-          throw new Error('Falha ao carregar Gist');
-        }
-      } catch (error) {
-        console.log('Usando fallback para localStorage');
-        const armazenadas = localStorage.getItem("parcelas");
-        const adiantamentoSalvo = localStorage.getItem("adiantamentoExtra");
-        if (armazenadas) parcelas = JSON.parse(armazenadas);
-        if (adiantamentoSalvo) adiantamentoExtra = parseFloat(adiantamentoSalvo);
-      }
+    function carregarDados() {
+      const armazenadas = localStorage.getItem("parcelas");
+      const adiantamentoSalvo = localStorage.getItem("adiantamentoExtra");
+      if (armazenadas) parcelas = JSON.parse(armazenadas);
+      if (adiantamentoSalvo) adiantamentoExtra = parseFloat(adiantamentoSalvo);
     }
 
     function gerarParcelas() {
@@ -97,15 +279,67 @@
       }
     }
 
-    // (Mantenha as outras funções como renderTabela, marcarPago, etc.)
+    function renderTabela() {
+      const tbody = document.querySelector("#tabelaParcelas tbody");
+      tbody.innerHTML = "";
+      totalPago = entrada + adiantamentoExtra;
+      totalRestante = parcelasTotais * valorParcela;
 
-    async function init() {
-      await carregarDados();
-      if (parcelas.length === 0) gerarParcelas();
-      renderTabela();
+      parcelas.forEach(parcela => {
+        const tr = document.createElement("tr");
+        tr.className = parcela.pago ? "pago" : "falta";
+
+        const status = parcela.pago
+          ? `<span class='status'><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Paga</span>`
+          : `<span class='status'><i class="bi bi-exclamation-circle-fill" style="color: var(--danger)"></i> Em aberto</span>`;
+
+        const botao = parcela.pago
+          ? `<button class='btn-pago' disabled><i class="bi bi-lock-fill"></i> Pago</button>`
+          : `<button class='btn-pagar' onclick="marcarPago(${parcela.id})"><i class="bi bi-check-lg"></i> Marcar Pago</button>`;
+
+        if (parcela.pago) totalPago += parcela.valor;
+        if (parcela.pago) totalRestante -= parcela.valor;
+
+        tr.innerHTML = `
+          <td>${parcela.id}</td>
+          <td>${parcela.data}</td>
+          <td>R$ ${parcela.valor.toFixed(2)}</td>
+          <td>${status}</td>
+          <td>${botao}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      atualizarTotais();
     }
 
-    init();
+    function marcarPago(id) {
+      const parcela = parcelas.find(p => p.id === id);
+      if (!parcela.pago) {
+        parcela.pago = true;
+        salvarDados();
+        renderTabela();
+      }
+    }
+
+    function adicionarAdiantamento() {
+      const valor = parseFloat(document.getElementById("adiantamento").value);
+      if (!isNaN(valor) && valor > 0) {
+        adiantamentoExtra += valor;
+        salvarDados();
+        renderTabela();
+        document.getElementById("adiantamento").value = "";
+      }
+    }
+
+    function atualizarTotais() {
+      document.getElementById("totalPago").textContent = totalPago.toFixed(2);
+      document.getElementById("totalRestante").textContent = totalRestante.toFixed(2);
+    }
+
+    carregarDados();
+    if (parcelas.length === 0) gerarParcelas();
+    renderTabela();
   </script>
 </body>
 </html>
