@@ -1,53 +1,72 @@
-name: Update Payment Data
+name: 🚀 Update Payment Data
 
 on:
   issues:
-    types: [opened]
+    types: [opened, labeled]
     labels: ['data-update']
 
 jobs:
-  update-data:
+  update-database:
     runs-on: ubuntu-latest
 
     steps:
-    # Passo 1: Baixa o código do repositório
-    - uses: actions/checkout@v4
+    - name: 🛠️ Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-    # Passo 2: Extrai o JSON do corpo da issue
-    - name: Extract JSON
-      id: extract_json
+    - name: 🔍 Validate Issue
+      id: validate
       run: |
-        # Extrai o conteúdo entre ```json e ```
-        CONTENT=$(awk '/```json/{flag=1; next} /```/{flag=0} flag' <<< "${{ github.event.issue.body }}")
+        # Verifica se a issue tem a label correta
+        if [[ "${{ github.event.issue.labels.*.name }}" != *"data-update"* ]]; then
+          echo "::warning::Issue não tem a label 'data-update'"
+          exit 0
+        fi
+
+        # Verifica se o corpo contém JSON
+        if ! grep -q '```json' <<< "${{ github.event.issue.body }}"; then
+          echo "::error::Corpo da issue não contém bloco JSON"
+          exit 1
+        fi
+
+    - name: 📦 Extract JSON
+      id: extract
+      run: |
+        # Extrai o JSON entre os marcadores
+        CONTENT=$(sed -n '/```json/,/```/{/```json/d;/```/d;p;}' <<< "${{ github.event.issue.body }}")
         
-        # Valida se o JSON é válido
-        if ! jq -e . >/dev/null 2>&1 <<<"$CONTENT"; then
-          echo "::error::O conteúdo não é um JSON válido"
+        # Valida o JSON
+        if ! jq empty <<< "$CONTENT" 2>/dev/null; then
+          echo "::error::JSON inválido"
           exit 1
         fi
         
-        # Salva o conteúdo em um arquivo
+        # Cria o diretório se não existir
+        mkdir -p db
         echo "$CONTENT" > db/pagamentos.json
-        echo "JSON extraído e validado com sucesso"
+        echo "::notice::JSON extraído com sucesso"
 
-    # Passo 3: Configura o Git
-    - name: Configure Git
+    - name: 💾 Commit Changes
       run: |
-        git config --global user.name "GitHub Actions"
+        git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
-
-    # Passo 4: Faz commit das mudanças
-    - name: Commit changes
-      run: |
         git add db/pagamentos.json
-        git commit -m "Atualização automática via Issue #${{ github.event.issue.number }}"
+        git diff --quiet && git diff --staged --quiet || git commit -m "📌 Atualização via Issue #${{ github.event.issue.number }}"
         git push
 
-    # Passo 5: Fecha a issue automaticamente
-    - name: Close issue
+    - name: 🔒 Close Issue
+      if: success()
       uses: actions/github-script@v6
       with:
         script: |
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: "✅ Dados atualizados com sucesso!\n\nArquivo atualizado: [pagamentos.json](https://github.com/${{ github.repository }}/blob/main/db/pagamentos.json)"
+          })
+          
           await github.rest.issues.update({
             owner: context.repo.owner,
             repo: context.repo.repo,
