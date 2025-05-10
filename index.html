@@ -233,7 +233,7 @@
     </table>
 
     <div class="total-box">
-      <p><i class="bi bi-cash-coin text-success"></i> Entrada: <strong>R$ 2.000,00</strong></p>
+      <p><i class="bi bi-cash-coin text-success"></i> Entrada: <strong>R$ 2.000,00</strong> (Junho)</p>
       <p><i class="bi bi-wallet2"></i> Total Pago: <strong>R$ <span id="totalPago">0.00</span></strong></p>
       <p><i class="bi bi-cash-stack"></i> Total Restante: <strong>R$ <span id="totalRestante">0.00</span></strong></p>
       <p><i class="bi bi-calculator"></i> Total Geral: <strong>R$ 9.500,00</strong></p>
@@ -269,7 +269,7 @@
 
     function gerarParcelas() {
       const anoInicial = 2024;
-      const mesInicial = 6;
+      const mesInicial = 7; // Primeira parcela em julho (mês 7)
       for (let i = 0; i < parcelasTotais; i++) {
         const mesTotal = mesInicial + i;
         const ano = anoInicial + Math.floor((mesTotal - 1) / 12);
