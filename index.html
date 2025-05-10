@@ -8,12 +8,17 @@
   <style>
     :root {
       --bg: #121212;
-      --bg-light: rgba(31, 31, 31, 0.85);
+      --bg-light: #1f1f1f;
       --text: #f0f0f0;
       --primary: #4dabf7;
       --success: #51cf66;
       --danger: #ff6b6b;
       --muted: #999;
+      --border: #2c2c2c;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
@@ -22,50 +27,159 @@
       background: var(--bg);
       color: var(--text);
       padding: 20px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 20px;
+      animation: fadeInDown 1s ease;
     }
 
     .container {
       background: var(--bg-light);
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 800px;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+      max-width: 1000px;
       margin: 0 auto;
+      animation: fadeIn 1.2s ease-in-out;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
+      margin-top: 20px;
     }
 
     th, td {
-      padding: 12px;
+      padding: 16px;
       text-align: center;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.95rem;
     }
 
     th {
       background: var(--primary);
       color: white;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    tr:hover td {
+      background-color: rgba(255, 255, 255, 0.03);
+      transition: background 0.3s ease;
+    }
+
+    tr.pago td {
+      background-color: rgba(81, 207, 102, 0.08);
+      transition: background-color 0.3s;
+    }
+
+    tr.falta td {
+      background-color: rgba(255, 107, 107, 0.04);
+      transition: background-color 0.3s;
     }
 
     button {
-      padding: 8px 16px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
+      font-size: 0.9rem;
       cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-pagar {
       background: var(--primary);
       color: white;
     }
 
-    .pago { background: rgba(81, 207, 102, 0.1); }
-    .falta { background: rgba(255, 107, 107, 0.05); }
+    .btn-pagar:hover {
+      background: #339af0;
+      transform: scale(1.05);
+    }
+
+    .btn-pago {
+      background: var(--muted);
+      color: #ccc;
+      cursor: default;
+    }
+
+    .btn-salvar {
+      background: var(--success);
+      color: white;
+      margin: 20px auto;
+      display: block;
+    }
+
+    .btn-salvar:hover {
+      background: #40a350;
+      transform: scale(1.05);
+    }
+
+    .total-box {
+      margin-top: 30px;
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .total-box p {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-group {
+      margin-top: 30px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    input[type='number'] {
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      color: var(--text);
+      font-size: 1rem;
+      min-width: 150px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
+  <h1><i class="bi bi-speedometer2"></i> Pagamento da Moto</h1>
   <div class="container">
-    <h1><i class="bi bi-speedometer2"></i> Pagamento da Moto</h1>
-    
     <table id="tabelaParcelas">
       <thead>
         <tr>
@@ -79,46 +193,59 @@
       <tbody></tbody>
     </table>
 
-    <div>
-      <p>Total Pago: R$ <span id="totalPago">0.00</span></p>
-      <p>Total Restante: R$ <span id="totalRestante">0.00</span></p>
+    <div class="total-box">
+      <p><i class="bi bi-cash-coin text-success"></i> Entrada: <strong>R$ 2.000,00</strong></p>
+      <p><i class="bi bi-wallet2"></i> Total Pago: <strong>R$ <span id="totalPago">0.00</span></strong></p>
+      <p><i class="bi bi-cash-stack"></i> Total Restante: <strong>R$ <span id="totalRestante">0.00</span></strong></p>
+      <p><i class="bi bi-calculator"></i> Total Geral: <strong>R$ 9.500,00</strong></p>
     </div>
 
-    <div style="margin-top: 20px;">
-      <button onclick="salvarDados()">
-        <i class="bi bi-save"></i> Salvar no GitHub
-      </button>
+    <div class="input-group">
+      <label for="adiantamento"><i class="bi bi-piggy-bank"></i> Adiantamento:</label>
+      <input type="number" id="adiantamento" step="0.01" placeholder="R$" />
+      <button class="btn-pagar" onclick="adicionarAdiantamento()"><i class="bi bi-plus-circle"></i> Adicionar</button>
     </div>
+
+    <button class="btn-salvar" onclick="salvarDados()">
+      <i class="bi bi-cloud-arrow-up"></i> Salvar no GitHub
+    </button>
   </div>
 
   <script>
-    // Configuração - SUBSTITUA com seus dados!
+    // Configuração do Repositório
     const REPO_OWNER = "SEU_USUARIO_GITHUB";
     const REPO_NAME = "SEU_REPOSITORIO";
 
-    // Dados iniciais
+    // Dados da moto
     const parcelasTotais = 15;
     const valorParcela = 500;
+    const entrada = 2000;
     let parcelas = [];
-    let totalPago = 0;
-    let totalRestante = 0;
+    let totalPago = entrada;
+    let totalRestante = parcelasTotais * valorParcela;
+    let adiantamentoExtra = 0;
 
-    // Carrega dados do localStorage ou gera parcelas
+    // Carrega dados salvos
     function carregarDados() {
       const salvos = localStorage.getItem("parcelas");
       if (salvos) {
         parcelas = JSON.parse(salvos);
+        adiantamentoExtra = parseFloat(localStorage.getItem("adiantamentoExtra")) || 0;
       } else {
         gerarParcelas();
       }
       renderTabela();
     }
 
-    // Gera as parcelas iniciais (1ª parcela em Julho/2024)
+    // Gera as parcelas iniciais (1ª parcela em 05/07/2024)
     function gerarParcelas() {
       for (let i = 0; i < parcelasTotais; i++) {
         const data = new Date(2024, 6 + i, 5); // Julho = mês 6
-        const dataFormatada = data.toLocaleDateString('pt-BR');
+        const dataFormatada = data.toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        });
         parcelas.push({
           id: i + 1,
           data: dataFormatada,
@@ -133,24 +260,30 @@
       const tbody = document.querySelector("#tabelaParcelas tbody");
       tbody.innerHTML = "";
       
-      totalPago = 0;
-      totalRestante = 0;
+      totalPago = entrada + adiantamentoExtra;
+      totalRestante = parcelasTotais * valorParcela;
 
       parcelas.forEach(parcela => {
         const tr = document.createElement("tr");
         tr.className = parcela.pago ? "pago" : "falta";
 
+        const status = parcela.pago
+          ? `<span class='status'><i class="bi bi-check-circle-fill" style="color: var(--success)"></i> Paga</span>`
+          : `<span class='status'><i class="bi bi-exclamation-circle-fill" style="color: var(--danger)"></i> Pendente</span>`;
+
+        const botao = parcela.pago
+          ? `<button class='btn-pago' disabled><i class="bi bi-lock-fill"></i> Pago</button>`
+          : `<button class='btn-pagar' onclick="marcarPago(${parcela.id})"><i class="bi bi-check-lg"></i> Marcar Pago</button>`;
+
         if (parcela.pago) totalPago += parcela.valor;
-        else totalRestante += parcela.valor;
+        if (parcela.pago) totalRestante -= parcela.valor;
 
         tr.innerHTML = `
           <td>${parcela.id}</td>
           <td>${parcela.data}</td>
           <td>R$ ${parcela.valor.toFixed(2)}</td>
-          <td>${parcela.pago ? "Paga" : "Pendente"}</td>
-          <td><button onclick="marcarPago(${parcela.id})">
-            ${parcela.pago ? "✔️" : "Marcar Pago"}
-          </button></td>
+          <td>${status}</td>
+          <td>${botao}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -162,34 +295,55 @@
     // Marca parcela como paga
     function marcarPago(id) {
       const parcela = parcelas.find(p => p.id === id);
-      parcela.pago = true;
-      renderTabela();
+      if (!parcela.pago) {
+        parcela.pago = true;
+        salvarLocal();
+        renderTabela();
+      }
+    }
+
+    // Adiciona adiantamento
+    function adicionarAdiantamento() {
+      const valor = parseFloat(document.getElementById("adiantamento").value);
+      if (!isNaN(valor) && valor > 0) {
+        adiantamentoExtra += valor;
+        salvarLocal();
+        renderTabela();
+        document.getElementById("adiantamento").value = "";
+      }
+    }
+
+    // Salva localmente
+    function salvarLocal() {
+      localStorage.setItem("parcelas", JSON.stringify(parcelas));
+      localStorage.setItem("adiantamentoExtra", adiantamentoExtra);
     }
 
     // Prepara para salvar no GitHub
     function salvarDados() {
       const dados = {
         parcelas,
+        adiantamentoExtra,
         lastUpdated: new Date().toISOString()
       };
 
       const jsonStr = JSON.stringify(dados, null, 2);
       
       // 1. Salva localmente
-      localStorage.setItem("parcelas", JSON.stringify(parcelas));
+      salvarLocal();
       
       // 2. Abre issue com instruções
       const url = `https://github.com/${REPO_OWNER}/${REPO_NAME}/issues/new?` +
         `title=Atualizar+Pagamentos&` +
         `body=${encodeURIComponent(
-          "Substitua o conteúdo de 'db/pagamentos.json' por:\n\n```json\n" + 
+          "Substitua TODO o conteúdo de 'db/pagamentos.json' por:\n\n```json\n" + 
           jsonStr + 
-          "\n```\n\n*Copie todo o texto acima*"
+          "\n```\n\n*Copie todo o texto entre os marcadores ```json*"
         )}`;
       
       window.open(url, '_blank');
       
-      alert("1. Copie o JSON\n2. Cole no arquivo pagamentos.json\n3. Faça commit manual");
+      alert("1. Copie o JSON da issue\n2. Cole em db/pagamentos.json\n3. Faça commit manual");
     }
 
     // Inicia o app
