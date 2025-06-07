@@ -1,5 +1,96 @@
 {
-  "parcelas": [],
+  "parcelas": [
+    {
+      "id": 1,
+      "data": "05/07/2024",
+      "valor": 500,
+      "pago": true
+    },
+    {
+      "id": 2,
+      "data": "05/08/2024",
+      "valor": 500,
+      "pago": true
+    },
+    {
+      "id": 3,
+      "data": "05/09/2024",
+      "valor": 500,
+      "pago": true
+    },
+    {
+      "id": 4,
+      "data": "05/10/2024",
+      "valor": 500,
+      "pago": true
+    },
+    {
+      "id": 5,
+      "data": "05/11/2024",
+      "valor": 500,
+      "pago": true
+    },
+    {
+      "id": 6,
+      "data": "05/12/2024",
+      "valor": 500,
+      "pago": true
+    },
+    {
+      "id": 7,
+      "data": "05/01/2025",
+      "valor": 500,
+      "pago": true
+    },
+    {
+      "id": 8,
+      "data": "05/02/2025",
+      "valor": 500,
+      "pago": true
+    },
+    {
+      "id": 9,
+      "data": "05/03/2025",
+      "valor": 500,
+      "pago": true
+    },
+    {
+      "id": 10,
+      "data": "05/04/2025",
+      "valor": 500,
+      "pago": true
+    },
+    {
+      "id": 11,
+      "data": "05/05/2025",
+      "valor": 500,
+      "pago": true
+    },
+    {
+      "id": 12,
+      "data": "05/06/2025",
+      "valor": 500,
+      "pago": false
+    },
+    {
+      "id": 13,
+      "data": "05/07/2025",
+      "valor": 500,
+      "pago": false
+    },
+    {
+      "id": 14,
+      "data": "05/08/2025",
+      "valor": 500,
+      "pago": false
+    },
+    {
+      "id": 15,
+      "data": "05/09/2025",
+      "valor": 500,
+      "pago": false
+    }
+  ],
   "adiantamentoExtra": 0,
-  "lastUpdated": null
+  "lastUpdated": "2025-06-07T15:16:06.148Z"
 }
