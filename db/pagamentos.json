@@ -1,3 +1,6 @@
+Substitua TODO o conteúdo de 'db/pagamentos.json' por:
+
+```json
 {
   "parcelas": [
     {
@@ -92,5 +95,8 @@
     }
   ],
   "adiantamentoExtra": 0,
-  "lastUpdated": "2025-06-07T15:16:06.148Z"
+  "lastUpdated": "2025-06-07T16:01:18.509Z"
 }
+```
+
+*Copie todo o texto entre os marcadores ```json*
